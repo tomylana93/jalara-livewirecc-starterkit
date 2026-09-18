@@ -5,15 +5,14 @@
         <!-- Session Status -->
         <x-auth-session-status class="text-center" :status="session('status')" />
 
-        <form method="POST" action="{{ route('password.email') }}" class="flex flex-col gap-6">
+        <form novalidate method="POST" action="{{ route('password.email') }}" class="flex flex-col gap-6">
             @csrf
 
             <!-- Email Address -->
             <flux:input
                 name="email"
                 :label="__('authentication.label.email_address')"
-                type="email"
-                required
+                type="text" inputmode="email"
                 autofocus
                 placeholder="email@example.com"
             />

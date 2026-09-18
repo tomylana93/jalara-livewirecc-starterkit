@@ -5,7 +5,7 @@
         <!-- Session Status -->
         <x-auth-session-status class="text-center" :status="session('status')" />
 
-        <form method="POST" action="{{ route('register.store') }}" class="flex flex-col gap-6">
+        <form novalidate method="POST" action="{{ route('register.store') }}" class="flex flex-col gap-6">
             @csrf
             <!-- Name -->
             <flux:input
@@ -13,7 +13,6 @@
                 :label="__('authentication.label.name')"
                 :value="old('name')"
                 type="text"
-                required
                 autofocus
                 autocomplete="name"
                 :placeholder="__('authentication.placeholder.full_name')"
@@ -24,8 +23,7 @@
                 name="email"
                 :label="__('authentication.label.email_address')"
                 :value="old('email')"
-                type="email"
-                required
+                type="text" inputmode="email"
                 autocomplete="email"
                 placeholder="email@example.com"
             />
@@ -35,7 +33,6 @@
                 name="password"
                 :label="__('authentication.label.password')"
                 type="password"
-                required
                 autocomplete="new-password"
                 :placeholder="__('authentication.label.password')"
                 passwordrules="{{ \Illuminate\Validation\Rules\Password::defaults()->toPasswordRulesString() }}"
@@ -47,7 +44,6 @@
                 name="password_confirmation"
                 :label="__('authentication.label.confirm_password')"
                 type="password"
-                required
                 autocomplete="new-password"
                 :placeholder="__('authentication.label.confirm_password')"
                 passwordrules="{{ \Illuminate\Validation\Rules\Password::defaults()->toPasswordRulesString() }}"

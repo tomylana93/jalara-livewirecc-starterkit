@@ -43,7 +43,7 @@
                 />
             </div>
 
-            <form method="POST" action="{{ route('two-factor.login.store') }}">
+            <form novalidate method="POST" action="{{ route('two-factor.login.store') }}">
                 @csrf
 
                 <div class="space-y-5 text-center">
@@ -56,7 +56,12 @@
                                 :label="__('authentication.heading.authentication_code')"
                                 label:sr-only
                                 class="mx-auto"
-                             />
+                                :aria-invalid="$errors->has('code') ? 'true' : 'false'"
+                            >
+                                @for ($index = 0; $index < 6; $index++)
+                                    <flux:otp.input :invalid="$errors->has('code')" />
+                                @endfor
+                            </flux:otp>
                         </div>
                     </div>
 
@@ -65,18 +70,14 @@
                             <flux:input
                                 type="text"
                                 name="recovery_code"
+                                :invalid="$errors->has('recovery_code')"
+                                :label="__('authentication.placeholder.recovery_code')"
+                                label:sr-only
                                 x-ref="recovery_code"
-                                x-bind:required="showRecoveryInput"
                                 autocomplete="one-time-code"
                                 x-model="recovery_code"
                             />
                         </div>
-
-                        @error('recovery_code')
-                            <flux:text color="red">
-                                {{ $message }}
-                            </flux:text>
-                        @enderror
                     </div>
 
                     <flux:button

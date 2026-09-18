@@ -7,7 +7,7 @@
 
         <x-passkey-verify />
 
-        <form method="POST" action="{{ route('login.store') }}" class="flex flex-col gap-6">
+        <form novalidate method="POST" action="{{ route('login.store') }}" class="flex flex-col gap-6">
             @csrf
 
             <!-- Email Address -->
@@ -15,8 +15,7 @@
                 name="email"
                 :label="__('authentication.label.email_address')"
                 :value="old('email')"
-                type="email"
-                required
+                type="text" inputmode="email"
                 autofocus
                 autocomplete="email"
                 placeholder="email@example.com"
@@ -28,7 +27,6 @@
                     name="password"
                     :label="__('authentication.label.password')"
                     type="password"
-                    required
                     autocomplete="current-password"
                     :placeholder="__('authentication.label.password')"
                     viewable

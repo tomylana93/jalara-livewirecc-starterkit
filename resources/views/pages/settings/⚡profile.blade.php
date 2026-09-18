@@ -82,11 +82,11 @@ new #[Title('profile.heading.settings')] class extends Component {
     <flux:heading level="2" class="sr-only">{{ __('profile.heading.settings') }}</flux:heading>
 
     <x-pages::settings.layout :heading="__('navigation.label.profile')" :subheading="__('profile.description.settings')">
-        <form wire:submit="updateProfileInformation" class="my-6 w-full space-y-6">
-            <flux:input wire:model="name" :label="__('authentication.label.name')" type="text" required autofocus autocomplete="name" />
+        <form novalidate wire:submit="updateProfileInformation" class="my-6 w-full space-y-6">
+            <flux:input wire:model="name" :label="__('authentication.label.name')" type="text" autofocus autocomplete="name" />
 
             <div>
-                <flux:input wire:model="email" :label="__('authentication.label.email')" type="email" required autocomplete="email" />
+                <flux:input wire:model="email" :label="__('authentication.label.email')" type="text" inputmode="email" autocomplete="email" />
 
                 @if ($this->hasUnverifiedEmail)
                     <div>

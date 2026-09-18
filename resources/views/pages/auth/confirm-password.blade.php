@@ -15,14 +15,13 @@
             :separator="__('authentication.description.confirm_alternative')"
         />
 
-        <form method="POST" action="{{ route('password.confirm.store') }}" class="flex flex-col gap-6">
+        <form novalidate method="POST" action="{{ route('password.confirm.store') }}" class="flex flex-col gap-6">
             @csrf
 
             <flux:input
                 name="password"
                 :label="__('authentication.label.password')"
                 type="password"
-                required
                 autocomplete="current-password"
                 :placeholder="__('authentication.label.password')"
                 viewable

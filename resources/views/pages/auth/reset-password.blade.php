@@ -5,7 +5,7 @@
         <!-- Session Status -->
         <x-auth-session-status class="text-center" :status="session('status')" />
 
-        <form method="POST" action="{{ route('password.update') }}" class="flex flex-col gap-6">
+        <form novalidate method="POST" action="{{ route('password.update') }}" class="flex flex-col gap-6">
             @csrf
             <!-- Token -->
             <input type="hidden" name="token" value="{{ request()->route('token') }}">
@@ -15,8 +15,7 @@
                 name="email"
                 value="{{ request('email') }}"
                 :label="__('authentication.label.email')"
-                type="email"
-                required
+                type="text" inputmode="email"
                 autocomplete="email"
             />
 
@@ -25,7 +24,6 @@
                 name="password"
                 :label="__('authentication.label.password')"
                 type="password"
-                required
                 autocomplete="new-password"
                 :placeholder="__('authentication.label.password')"
                 passwordrules="{{ \Illuminate\Validation\Rules\Password::defaults()->toPasswordRulesString() }}"
@@ -37,7 +35,6 @@
                 name="password_confirmation"
                 :label="__('authentication.label.confirm_password')"
                 type="password"
-                required
                 autocomplete="new-password"
                 :placeholder="__('authentication.label.confirm_password')"
                 passwordrules="{{ \Illuminate\Validation\Rules\Password::defaults()->toPasswordRulesString() }}"

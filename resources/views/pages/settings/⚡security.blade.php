@@ -172,12 +172,11 @@ new #[Title('security.heading.settings')] class extends Component {
     <flux:heading level="2" class="sr-only">{{ __('security.heading.settings') }}</flux:heading>
 
     <x-pages::settings.layout :heading="__('security.heading.update_password')" :subheading="__('security.description.update_password')">
-        <form method="POST" wire:submit="updatePassword" class="mt-6 space-y-6">
+        <form novalidate method="POST" wire:submit="updatePassword" class="mt-6 space-y-6">
             <flux:input
                 wire:model="current_password"
                 :label="__('security.label.current_password')"
                 type="password"
-                required
                 autocomplete="current-password"
                 viewable
             />
@@ -185,7 +184,6 @@ new #[Title('security.heading.settings')] class extends Component {
                 wire:model="password"
                 :label="__('security.label.new_password')"
                 type="password"
-                required
                 autocomplete="new-password"
                 passwordrules="{{ \Illuminate\Validation\Rules\Password::defaults()->toPasswordRulesString() }}"
                 viewable
@@ -194,7 +192,6 @@ new #[Title('security.heading.settings')] class extends Component {
                 wire:model="password_confirmation"
                 :label="__('authentication.label.confirm_password')"
                 type="password"
-                required
                 autocomplete="new-password"
                 passwordrules="{{ \Illuminate\Validation\Rules\Password::defaults()->toPasswordRulesString() }}"
                 viewable

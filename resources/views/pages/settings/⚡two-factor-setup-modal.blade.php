@@ -197,7 +197,12 @@ new class extends Component {
                             :label="__('authentication.heading.authentication_code')"
                             label:sr-only
                             class="mx-auto"
-                        />
+                            :aria-invalid="$errors->has('code') ? 'true' : 'false'"
+                        >
+                            @for ($index = 0; $index < 6; $index++)
+                                <flux:otp.input :invalid="$errors->has('code')" />
+                            @endfor
+                        </flux:otp>
                     </div>
 
                     <div class="flex items-center space-x-3">
