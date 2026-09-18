@@ -41,6 +41,8 @@
                 </flux:tooltip>
             </flux:navbar>
 
+            <x-appearance-menu />
+
             <x-desktop-user-menu />
         </flux:header>
 
