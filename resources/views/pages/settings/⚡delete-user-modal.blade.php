@@ -1,25 +1,38 @@
 <?php
 
+use App\Actions\Profile\DeleteProfile;
 use App\Concerns\PasswordValidationRules;
 use App\Livewire\Actions\Logout;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
+use Livewire\Attributes\Validate;
 
 new class extends Component {
     use PasswordValidationRules;
 
+    #[Validate]
     public string $password = '';
+
+    /**
+     * @return array<string, array<int, \Illuminate\Validation\Rules\Password|\Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>>
+     */
+    protected function rules(): array
+    {
+        return ['password' => $this->currentPasswordRules()];
+    }
 
     /**
      * Delete the currently authenticated user.
      */
-    public function deleteUser(Logout $logout): void
+    public function deleteUser(Logout $logout, DeleteProfile $deleteProfile): void
     {
-        $this->validate([
-            'password' => $this->currentPasswordRules(),
-        ]);
+        $this->validate();
 
-        tap(Auth::user(), $logout(...))->delete();
+        $user = Auth::user();
+
+        $logout();
+
+        $deleteProfile->handle($user);
 
         $this->redirect('/', navigate: true);
     }
@@ -35,7 +48,7 @@ new class extends Component {
             </flux:subheading>
         </div>
 
-        <flux:input wire:model="password" :label="__('authentication.label.password')" type="password" viewable />
+        <flux:input wire:model.blur.live="password" :label="__('authentication.label.password')" type="password" viewable />
 
         <div class="flex justify-end space-x-2 rtl:space-x-reverse">
             <flux:modal.close>

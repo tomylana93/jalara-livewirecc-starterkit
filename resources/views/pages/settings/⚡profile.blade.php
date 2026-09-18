@@ -1,5 +1,6 @@
 <?php
 
+use App\Actions\Profile\UpdateProfile;
 use App\Concerns\ProfileValidationRules;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Flux\Flux;
@@ -7,12 +8,15 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Title;
+use Livewire\Attributes\Validate;
 use Livewire\Component;
 
 new #[Title('profile.heading.settings')] class extends Component {
     use ProfileValidationRules;
 
+    #[Validate]
     public string $name = '';
+    #[Validate]
     public string $email = '';
 
     /**
@@ -25,21 +29,23 @@ new #[Title('profile.heading.settings')] class extends Component {
     }
 
     /**
+     * @return array<string, array<int, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>>
+     */
+    protected function rules(): array
+    {
+        return $this->profileRules(Auth::id());
+    }
+
+    /**
      * Update the profile information for the currently authenticated user.
      */
-    public function updateProfileInformation(): void
+    public function updateProfileInformation(UpdateProfile $updateProfile): void
     {
         $user = Auth::user();
 
-        $validated = $this->validate($this->profileRules($user->id));
+        $validated = $this->validate();
 
-        $user->fill($validated);
-
-        if ($user->isDirty('email')) {
-            $user->email_verified_at = null;
-        }
-
-        $user->save();
+        $updateProfile->handle($user, $validated);
 
         Flux::toast(variant: 'success', text: __('profile.message.updated'));
     }
@@ -83,10 +89,10 @@ new #[Title('profile.heading.settings')] class extends Component {
 
     <x-pages::settings.layout :heading="__('navigation.label.profile')" :subheading="__('profile.description.settings')">
         <form novalidate wire:submit="updateProfileInformation" class="my-6 w-full space-y-6">
-            <flux:input wire:model="name" :label="__('authentication.label.name')" type="text" autofocus autocomplete="name" />
+            <flux:input wire:model.blur.live="name" :label="__('authentication.label.name')" type="text" autofocus autocomplete="name" />
 
             <div>
-                <flux:input wire:model="email" :label="__('authentication.label.email')" type="text" inputmode="email" autocomplete="email" />
+                <flux:input wire:model.blur.live="email" :label="__('authentication.label.email')" type="text" inputmode="email" autocomplete="email" />
 
                 @if ($this->hasUnverifiedEmail)
                     <div>
