@@ -3,13 +3,13 @@
 use App\Models\User;
 use Livewire\Livewire;
 
-test('profile page is displayed', function () {
+test('profile page is displayed', function (): void {
     $this->actingAs($user = User::factory()->create());
 
     $this->get(route('profile.edit'))->assertOk();
 });
 
-test('profile information can be updated', function () {
+test('profile information can be updated', function (): void {
     $user = User::factory()->create();
 
     $this->actingAs($user);
@@ -23,12 +23,12 @@ test('profile information can be updated', function () {
 
     $user->refresh();
 
-    expect($user->name)->toEqual('Test User');
-    expect($user->email)->toEqual('test@example.com');
-    expect($user->email_verified_at)->toBeNull();
+    expect($user->name)->toEqual('Test User')
+        ->and($user->email)->toEqual('test@example.com')
+        ->and($user->email_verified_at)->toBeNull();
 });
 
-test('email verification status is unchanged when email address is unchanged', function () {
+test('email verification status is unchanged when email address is unchanged', function (): void {
     $user = User::factory()->create();
 
     $this->actingAs($user);
@@ -43,7 +43,7 @@ test('email verification status is unchanged when email address is unchanged', f
     expect($user->refresh()->email_verified_at)->not->toBeNull();
 });
 
-test('user can delete their account', function () {
+test('user can delete their account', function (): void {
     $user = User::factory()->create();
 
     $this->actingAs($user);
@@ -56,11 +56,11 @@ test('user can delete their account', function () {
         ->assertHasNoErrors()
         ->assertRedirect('/');
 
-    expect($user->fresh())->toBeNull();
-    expect(auth()->check())->toBeFalse();
+    expect($user->fresh())->toBeNull()
+        ->and(auth()->check())->toBeFalse();
 });
 
-test('correct password must be provided to delete account', function () {
+test('correct password must be provided to delete account', function (): void {
     $user = User::factory()->create();
 
     $this->actingAs($user);

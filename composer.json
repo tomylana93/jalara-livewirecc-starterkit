@@ -1,15 +1,17 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "laravel/livewire-starter-kit",
+    "name": "tomylana93/jalara-livewirecc-starterkit",
     "type": "project",
-    "description": "The official Laravel starter kit for Livewire.",
+    "description": "The Jalara starter kit for Laravel and Livewire.",
     "keywords": [
+        "jalara",
         "laravel",
-        "framework"
+        "livewire",
+        "starter-kit"
     ],
     "license": "MIT",
     "require": {
-        "php": "^8.3",
+        "php": "^8.5",
         "laravel/chisel": "^0.1.0",
         "laravel/fortify": "^1.37.2",
         "laravel/framework": "^13.17",
@@ -19,6 +21,7 @@
         "livewire/livewire": "^4.1"
     },
     "require-dev": {
+        "driftingly/rector-laravel": "^2.6",
         "fakerphp/faker": "^1.24",
         "larastan/larastan": "^3.9",
         "laravel/boost": "^2.2",
@@ -29,7 +32,10 @@
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^8.9.3",
         "pestphp/pest": "^5.2",
-        "pestphp/pest-plugin-laravel": "^5.0"
+        "pestphp/pest-plugin-laravel": "^5.0",
+        "pestphp/pest-plugin-phpstan": "^5.2",
+        "pestphp/pest-plugin-rector": "^5.0",
+        "pestphp/pest-plugin-type-coverage": "^5.0"
     },
     "autoload": {
         "psr-4": {
@@ -57,22 +63,23 @@
             "@php artisan dev"
         ],
         "lint": [
+            "@rector",
             "pint --parallel"
         ],
         "lint:check": [
+            "@rector:check",
             "pint --parallel --test"
         ],
         "ci:check": [
             "Composer\\Config::disableProcessTimeout",
-            "@test"
+            "@test:check",
+            "@php artisan test --ci"
         ],
         "types:check": [
             "phpstan analyse"
         ],
         "test": [
-            "@php artisan config:clear --ansi",
-            "@lint:check",
-            "@types:check",
+            "@test:check",
             "@php artisan test"
         ],
         "post-autoload-dump": [
@@ -93,6 +100,25 @@
         ],
         "pre-package-uninstall": [
             "Illuminate\\Foundation\\ComposerScripts::prePackageUninstall"
+        ],
+        "rector": [
+            "rector process"
+        ],
+        "rector:check": [
+            "rector process --dry-run"
+        ],
+        "test:check": [
+            "@php artisan config:clear --ansi",
+            "@lint:check",
+            "@types:check"
+        ],
+        "test:baseline": [
+            "@test:check",
+            "pest --ci --parallel --tia --fresh"
+        ],
+        "ci:baseline": [
+            "Composer\\Config::disableProcessTimeout",
+            "@test:baseline"
         ]
     },
     "extra": {

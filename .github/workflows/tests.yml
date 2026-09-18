@@ -1,22 +1,61 @@
 name: tests
 
 on:
-  push:
-    branches:
-      - main
+  workflow_call:
+    inputs:
+      record-baseline:
+        description: Record and publish a fresh TIA baseline
+        type: boolean
+        default: false
   pull_request:
 
 permissions:
   contents: read
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   ci:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    services:
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_DB: jalara_livewirecc_starterkit
+          POSTGRES_USER: jalara_ci
+          POSTGRES_HOST_AUTH_METHOD: trust
+        ports:
+          - 127.0.0.1:5432:5432
+        options: >-
+          --health-cmd "pg_isready -U jalara_ci -d jalara_livewirecc_starterkit"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      DB_CONNECTION: pgsql
+      DB_HOST: 127.0.0.1
+      DB_PORT: 5432
+      DB_DATABASE: jalara_livewirecc_starterkit
+      DB_USERNAME: jalara_ci
+      DB_PASSWORD: ''
+      DB_URL: ''
 
     steps:
+      - name: Validate baseline branch
+        if: ${{ inputs.record-baseline && github.ref != 'refs/heads/main' }}
+        run: |
+          echo "::error::TIA baselines must be recorded from main."
+          exit 1
+
       - name: Checkout code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          fetch-depth: ${{ inputs.record-baseline && '0' || '1' }}
           persist-credentials: false
 
       - name: Setup PHP
@@ -24,15 +63,78 @@ jobs:
         with:
           php-version: '8.5'
           tools: composer:v2
-          coverage: none
+          extensions: pdo_pgsql, pdo_sqlite
+          coverage: ${{ inputs.record-baseline && 'xdebug' || 'none' }}
+
+      - name: Resolve Composer cache
+        id: composer-cache
+        run: echo "path=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Composer downloads
+        uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
+        with:
+          path: ${{ steps.composer-cache.outputs.path }}
+          key: ${{ runner.os }}-php-8.5-composer-${{ hashFiles('composer.lock') }}
+          restore-keys: ${{ runner.os }}-php-8.5-composer-
+
+      - name: Install PHP dependencies
+        run: composer install --no-interaction --prefer-dist --no-progress
 
       - name: Setup Node
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
-          node-version: '22'
+          node-version: '24'
+
+      - name: Setup pnpm
+        run: npm install --global pnpm@10
+
+      - name: Resolve pnpm store
+        id: pnpm-store
+        run: echo "path=$(pnpm store path --silent)" >> "$GITHUB_OUTPUT"
+
+      - name: Cache pnpm store
+        uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
+        with:
+          path: ${{ steps.pnpm-store.outputs.path }}
+          key: ${{ runner.os }}-node-24-pnpm-10-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: ${{ runner.os }}-node-24-pnpm-10-
 
       - name: Setup Application
-        run: composer setup
+        run: |
+          php -r "file_exists('.env') || copy('.env.example', '.env');"
+          php artisan key:generate --force --no-interaction
+          php artisan config:clear --no-interaction
+
+      - name: Install frontend dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build frontend
+        run: pnpm run build
 
       - name: Run CI Checks
+        if: ${{ !inputs.record-baseline }}
         run: composer ci:check
+
+      - name: Run CI Checks and record TIA baseline
+        if: ${{ inputs.record-baseline }}
+        env:
+          XDEBUG_MODE: coverage
+        run: composer ci:baseline
+
+      - name: Resolve TIA baseline path
+        if: ${{ inputs.record-baseline }}
+        id: baseline
+        run: |
+          path=$(PAO_DISABLE=1 ./vendor/bin/pest --baseline)
+          test -s "$path/graph.json"
+          echo "path=$path" >> "$GITHUB_OUTPUT"
+
+      - name: Upload TIA baseline
+        if: ${{ inputs.record-baseline }}
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5
+        with:
+          name: pest-tia-baseline
+          path: ${{ steps.baseline.outputs.path }}
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 30
