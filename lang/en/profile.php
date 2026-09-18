@@ -21,6 +21,7 @@ return [
         'resend_verification' => 'Click here to re-send the verification email.',
     ],
     'label' => [
+        'avatar' => 'Avatar',
         'warning' => 'Warning',
     ],
 ];

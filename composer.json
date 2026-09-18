@@ -18,7 +18,8 @@
         "laravel/tinker": "^3.0",
         "livewire/blaze": "^1.0",
         "livewire/flux": "^2.13.1",
-        "livewire/livewire": "^4.1"
+        "livewire/livewire": "^4.1",
+        "spatie/laravel-medialibrary": "^11.0"
     },
     "require-dev": {
         "driftingly/rector-laravel": "^2.6",
@@ -72,6 +73,7 @@
         ],
         "ci:check": [
             "Composer\\Config::disableProcessTimeout",
+            "pnpm run test:frontend",
             "@test:check",
             "@php artisan test --ci"
         ],

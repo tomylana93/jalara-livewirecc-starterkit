@@ -88,6 +88,8 @@ new #[Title('profile.heading.settings')] class extends Component {
     <flux:heading level="2" class="sr-only">{{ __('profile.heading.settings') }}</flux:heading>
 
     <x-pages::settings.layout :heading="__('navigation.label.profile')" :subheading="__('profile.description.settings')">
+        <div class="mt-6"><livewire:avatar-uploader /></div>
+
         <form novalidate wire:submit="updateProfileInformation" class="my-6 w-full space-y-6">
             <flux:input wire:model.blur.live="name" :label="__('authentication.label.name')" type="text" autofocus autocomplete="name" />
 
