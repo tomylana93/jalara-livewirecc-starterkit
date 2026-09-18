@@ -78,15 +78,14 @@ test('profile renders Indonesian labels and saves a UUID user', function (): voi
     $this->assertDatabaseHas('users', ['id' => $user->id, 'name' => 'Updated name']);
 });
 
-test('welcome uses Indonesian translations', function (): void {
+test('home redirects guests to the Indonesian login page', function (): void {
     app()->setLocale('id');
 
-    $this->get(route('home'))
-        ->assertOk()
-        ->assertSee('Mari mulai')
-        ->assertSee('Dokumentasi')
-        ->assertSee('Laravel memiliki ekosistem yang sangat lengkap.')
-        ->assertDontSee('Laravel has an incredibly rich ecosystem.');
+    $this->get(route('home'))->assertRedirect(route('login'));
+
+    $this->get(route('login'))
+        ->assertSeeHtml('lang="id"')
+        ->assertSee('Masuk ke akun Anda');
 });
 
 test('authentication notifications use Indonesian translations', function (): void {
