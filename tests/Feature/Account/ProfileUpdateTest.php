@@ -14,7 +14,7 @@ test('profile information can be updated', function (): void {
 
     $this->actingAs($user);
 
-    $response = Livewire::test('pages::settings.profile')
+    $response = Livewire::test('pages::account.profile')
         ->set('name', 'Test User')
         ->set('email', 'test@example.com')
         ->call('updateProfileInformation');
@@ -33,7 +33,7 @@ test('email verification status is unchanged when email address is unchanged', f
 
     $this->actingAs($user);
 
-    $response = Livewire::test('pages::settings.profile')
+    $response = Livewire::test('pages::account.profile')
         ->set('name', 'Test User')
         ->set('email', $user->email)
         ->call('updateProfileInformation');
@@ -48,7 +48,7 @@ test('user can delete their account', function (): void {
 
     $this->actingAs($user);
 
-    $response = Livewire::test('pages::settings.delete-user-modal')
+    $response = Livewire::test('pages::account.delete-user-modal')
         ->set('password', 'password')
         ->call('deleteUser');
 
@@ -65,7 +65,7 @@ test('correct password must be provided to delete account', function (): void {
 
     $this->actingAs($user);
 
-    $response = Livewire::test('pages::settings.delete-user-modal')
+    $response = Livewire::test('pages::account.delete-user-modal')
         ->set('password', 'wrong-password')
         ->call('deleteUser');
 
@@ -79,7 +79,7 @@ test('profile fields validate without saving profile information', function (): 
     $originalAttributes = $user->refresh()->getAttributes();
     $this->actingAs($user);
 
-    Livewire::test('pages::settings.profile')
+    Livewire::test('pages::account.profile')
         ->assertSeeHtml('wire:model.blur.live="name"')
         ->assertSeeHtml('wire:model.blur.live="email"')
         ->set('name', 'Updated Name')
@@ -95,7 +95,7 @@ test('profile fields show validation errors before submission', function (): voi
     $originalAttributes = $user->refresh()->getAttributes();
     $this->actingAs($user);
 
-    Livewire::test('pages::settings.profile')
+    Livewire::test('pages::account.profile')
         ->set('name', '')
         ->assertHasErrors(['name' => 'required'])
         ->set('email', 'invalid-email')
@@ -110,7 +110,7 @@ test('profile email validation rejects another users email before submission', f
     $otherUser = User::factory()->create();
     $this->actingAs($user);
 
-    Livewire::test('pages::settings.profile')
+    Livewire::test('pages::account.profile')
         ->set('email', $otherUser->email)
         ->assertHasErrors(['email' => 'unique']);
 
@@ -121,7 +121,7 @@ test('profile email validation accepts the current email and clears previous err
     $user = User::factory()->create();
     $this->actingAs($user);
 
-    Livewire::test('pages::settings.profile')
+    Livewire::test('pages::account.profile')
         ->set('email', 'invalid-email')
         ->assertHasErrors(['email' => 'email'])
         ->set('email', $user->email)
@@ -133,7 +133,7 @@ test('delete account password validates without deleting the user or ending the 
     $this->actingAs($user)->withSession(['profile-session' => 'preserved']);
     $sessionToken = session()->token();
 
-    Livewire::test('pages::settings.delete-user-modal')
+    Livewire::test('pages::account.delete-user-modal')
         ->assertSeeHtml('wire:model.blur.live="password"')
         ->set('password', 'password')
         ->assertHasNoErrors()
@@ -149,7 +149,7 @@ test('delete account password shows validation errors before submission', functi
     $user = User::factory()->create();
     $this->actingAs($user);
 
-    Livewire::test('pages::settings.delete-user-modal')
+    Livewire::test('pages::account.delete-user-modal')
         ->set('password', 'wrong-password')
         ->assertHasErrors(['password' => 'current_password'])
         ->set('password', 'password')

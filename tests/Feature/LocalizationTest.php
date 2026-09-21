@@ -70,7 +70,7 @@ test('profile renders Indonesian labels and saves a UUID user', function (): voi
 
     $this->get(route('profile.edit'))->assertOk()->assertSee('Perbarui nama dan alamat email Anda');
 
-    Livewire::test('pages::settings.profile')
+    Livewire::test('pages::account.profile')
         ->set('name', 'Updated name')
         ->call('updateProfileInformation')
         ->assertHasNoErrors();

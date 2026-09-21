@@ -83,11 +83,11 @@ new #[Title('profile.heading.settings')] class extends Component {
 }; ?>
 
 <section class="w-full">
-    @include('partials.settings-heading')
+    @include('partials.account-heading')
 
     <flux:heading level="2" class="sr-only">{{ __('profile.heading.settings') }}</flux:heading>
 
-    <x-pages::settings.layout :heading="__('navigation.label.profile')" :subheading="__('profile.description.settings')">
+    <x-pages::account.layout :heading="__('navigation.label.profile')" :subheading="__('profile.description.settings')">
         <div class="mt-6"><livewire:avatar-uploader /></div>
 
         <form novalidate wire:submit="updateProfileInformation" class="my-6 w-full space-y-6">
@@ -126,7 +126,7 @@ new #[Title('profile.heading.settings')] class extends Component {
         </form>
 
         @if ($this->showDeleteUser)
-            <livewire:pages::settings.delete-user-form />
+            <livewire:pages::account.delete-user-form />
         @endif
-    </x-pages::settings.layout>
+    </x-pages::account.layout>
 </section>

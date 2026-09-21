@@ -58,7 +58,7 @@ test('settings forms defer validation to the server', function (string $routeNam
 
 test('profile email field shows and clears its server validation state', function (): void {
     $this->actingAs(User::factory()->create());
-    $component = Livewire::test('pages::settings.profile')
+    $component = Livewire::test('pages::account.profile')
         ->set('email', 'invalid-email')
         ->call('updateProfileInformation')
         ->assertHasErrors(['email' => 'email']);
@@ -75,7 +75,7 @@ test('profile email field shows and clears its server validation state', functio
 
 test('two factor verification marks all six slots invalid and clears the state on reset', function (): void {
     $this->actingAs(User::factory()->create());
-    $component = Livewire::test('pages::settings.two-factor-setup-modal', ['requiresConfirmation' => true])
+    $component = Livewire::test('pages::account.two-factor-setup-modal', ['requiresConfirmation' => true])
         ->set('showVerificationStep', true)
         ->set('code', '12')
         ->call('confirmTwoFactor')

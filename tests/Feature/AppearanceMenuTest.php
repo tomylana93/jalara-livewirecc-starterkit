@@ -26,12 +26,12 @@ test('application pages render one appearance menu without the old settings link
 
     $label = 'aria-label="'.__('appearance.heading.settings').'"';
     $response->assertSeeHtml($label)
-        ->assertDontSee('/settings/appearance');
+        ->assertDontSee('/account/appearance');
     expect(substr_count($response->getContent(), $label))->toBe(1);
 })->with(['dashboard', 'profile.edit', 'security.edit']);
 
 test('the old appearance settings page returns 404', function (): void {
     $user = User::factory()->create();
 
-    $this->actingAs($user)->get('/settings/appearance')->assertNotFound();
+    $this->actingAs($user)->get('/account/appearance')->assertNotFound();
 });

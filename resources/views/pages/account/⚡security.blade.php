@@ -167,11 +167,11 @@ new #[Title('security.heading.settings')] class extends Component {
 }; ?>
 
 <section class="w-full">
-    @include('partials.settings-heading')
+    @include('partials.account-heading')
 
     <flux:heading level="2" class="sr-only">{{ __('security.heading.settings') }}</flux:heading>
 
-    <x-pages::settings.layout :heading="__('security.heading.update_password')" :subheading="__('security.description.update_password')">
+    <x-pages::account.layout :heading="__('security.heading.update_password')" :subheading="__('security.description.update_password')">
         <form novalidate method="POST" wire:submit="updatePassword" class="mt-6 space-y-6">
             <flux:input
                 wire:model="current_password"
@@ -225,7 +225,7 @@ new #[Title('security.heading.settings')] class extends Component {
                                 </flux:button>
                             </div>
 
-                            <livewire:pages::settings.two-factor.recovery-codes :$requiresConfirmation />
+                            <livewire:pages::account.two-factor.recovery-codes :$requiresConfirmation />
                         </div>
                     @else
                         <div class="space-y-4">
@@ -242,7 +242,7 @@ new #[Title('security.heading.settings')] class extends Component {
                                 </flux:button>
                             </flux:modal.trigger>
 
-                            <livewire:pages::settings.two-factor-setup-modal :requires-confirmation="$requiresConfirmation" />
+                            <livewire:pages::account.two-factor-setup-modal :requires-confirmation="$requiresConfirmation" />
                         </div>
                     @endif
                 </div>
@@ -303,7 +303,7 @@ new #[Title('security.heading.settings')] class extends Component {
                 </div>
             </section>
         @endif
-    </x-pages::settings.layout>
+    </x-pages::account.layout>
 
     <flux:modal
         name="delete-passkey-modal"

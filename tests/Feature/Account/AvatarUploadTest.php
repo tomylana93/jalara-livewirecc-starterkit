@@ -94,7 +94,7 @@ test('deleting a profile removes its avatar files', function (): void {
     $media = $user->addMedia(UploadedFile::fake()->image('avatar.png'))->toMediaCollection('avatar');
     $paths = [$media->getPathRelativeToRoot(), $media->getPathRelativeToRoot('thumbnail')];
     $this->actingAs($user);
-    Livewire::test('pages::settings.delete-user-modal')->set('password', 'password')->call('deleteUser')->assertHasNoErrors();
+    Livewire::test('pages::account.delete-user-modal')->set('password', 'password')->call('deleteUser')->assertHasNoErrors();
     Storage::disk('public')->assertMissing($paths);
     $this->assertDatabaseMissing('media', ['id' => $media->id]);
 });

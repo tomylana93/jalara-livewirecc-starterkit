@@ -67,7 +67,7 @@ test('two factor authentication disabled when confirmation abandoned between req
 
     $this->actingAs($user);
 
-    $component = Livewire::test('pages::settings.security');
+    $component = Livewire::test('pages::account.security');
 
     $component->assertSet('twoFactorEnabled', false);
 
@@ -85,7 +85,7 @@ test('password can be updated', function (): void {
 
     $this->actingAs($user);
 
-    $response = Livewire::test('pages::settings.security')
+    $response = Livewire::test('pages::account.security')
         ->set('current_password', 'password')
         ->set('password', 'new-password')
         ->set('password_confirmation', 'new-password')
@@ -103,7 +103,7 @@ test('correct password must be provided to update password', function (): void {
 
     $this->actingAs($user);
 
-    $response = Livewire::test('pages::settings.security')
+    $response = Livewire::test('pages::account.security')
         ->set('current_password', 'wrong-password')
         ->set('password', 'new-password')
         ->set('password_confirmation', 'new-password')
