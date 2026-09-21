@@ -8,6 +8,7 @@ return [
         'menu' => 'Navigation menu',
         'platform' => 'Platform',
         'settings' => 'Settings',
+        'general' => 'General',
         'profile' => 'Profile',
         'security' => 'Security',
         'appearance' => 'Appearance',

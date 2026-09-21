@@ -8,6 +8,7 @@ return [
         'menu' => 'Menu navigasi',
         'platform' => 'Platform',
         'settings' => 'Pengaturan',
+        'general' => 'Umum',
         'profile' => 'Profil',
         'security' => 'Keamanan',
         'appearance' => 'Tampilan',
