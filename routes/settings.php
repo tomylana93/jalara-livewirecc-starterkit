@@ -9,4 +9,7 @@ Route::middleware(['auth'])->group(function (): void {
 
     Route::livewire('settings/general', 'pages::settings.general')
         ->name('settings.general.edit');
+
+    Route::livewire('settings/brand', 'pages::settings.brand')
+        ->name('settings.brand.edit');
 });

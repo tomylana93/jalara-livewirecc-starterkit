@@ -2,7 +2,14 @@
     'sidebar' => false,
 ])
 
-@if($sidebar)
+@if($brand['logoFull'])
+    <img
+        src="{{ $brand['logoFull'] }}"
+        alt="{{ config('app.name', 'Jalara') }}"
+        class="h-8 max-w-36 object-contain object-left"
+        {{ $attributes }}
+    />
+@elseif($sidebar)
     <flux:sidebar.brand :name="config('app.name', 'Jalara')" {{ $attributes }}>
         <x-slot name="logo" class="flex aspect-square size-8 items-center justify-center rounded-md bg-accent-content text-accent-foreground">
             <x-app-logo-icon class="size-5 fill-current text-white dark:text-black" />

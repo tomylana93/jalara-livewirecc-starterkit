@@ -9,6 +9,7 @@ return [
         'platform' => 'Platform',
         'settings' => 'Settings',
         'general' => 'General',
+        'brand' => 'Brand',
         'profile' => 'Profile',
         'security' => 'Security',
         'appearance' => 'Appearance',

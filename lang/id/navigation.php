@@ -9,6 +9,7 @@ return [
         'platform' => 'Platform',
         'settings' => 'Pengaturan',
         'general' => 'Umum',
+        'brand' => 'Merek',
         'profile' => 'Profil',
         'security' => 'Keamanan',
         'appearance' => 'Tampilan',

@@ -4,6 +4,9 @@
             <flux:navlist.item :href="route('settings.general.edit')" wire:navigate>
                 {{ __('navigation.label.general') }}
             </flux:navlist.item>
+            <flux:navlist.item :href="route('settings.brand.edit')" wire:navigate>
+                {{ __('navigation.label.brand') }}
+            </flux:navlist.item>
         </flux:navlist>
     </div>
 
