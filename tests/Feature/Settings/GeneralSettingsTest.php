@@ -39,6 +39,18 @@ test('general settings can be updated', function (): void {
         ->and($settings->timezone)->toBe('Asia/Jakarta');
 });
 
+test('updating the default locale immediately localizes the application', function (): void {
+    $this->actingAs(User::factory()->create());
+
+    Livewire::test('pages::settings.general')
+        ->set('default_locale', 'id')
+        ->call('save')
+        ->assertHasNoErrors()
+        ->assertSee('Pengaturan umum');
+
+    expect(app()->getLocale())->toBe('id');
+});
+
 test('optional general settings are stored as null when empty', function (): void {
     $this->actingAs(User::factory()->create());
 

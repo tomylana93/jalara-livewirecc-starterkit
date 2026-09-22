@@ -1,13 +1,16 @@
 <?php
 
 use App\Models\User;
+use App\Settings\GeneralSettings;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Support\Facades\Lang;
 use Livewire\Livewire;
 
 test('login renders the configured language regardless of browser language', function (string $locale, string $heading): void {
-    app()->setLocale($locale);
+    $settings = resolve(GeneralSettings::class);
+    $settings->default_locale = $locale;
+    $settings->save();
 
     $this->withHeader('Accept-Language', $locale === 'en' ? 'id' : 'en')
         ->get(route('login'))
@@ -20,7 +23,9 @@ test('login renders the configured language regardless of browser language', fun
 ]);
 
 test('login validation uses the configured language', function (string $locale, string $message): void {
-    app()->setLocale($locale);
+    $settings = resolve(GeneralSettings::class);
+    $settings->default_locale = $locale;
+    $settings->save();
 
     $this->post(route('login'), [])->assertSessionHasErrors(['email' => $message]);
 })->with([
@@ -29,14 +34,18 @@ test('login validation uses the configured language', function (string $locale, 
 ]);
 
 test('login consumes keyed Laravel PHP translations', function (): void {
-    app()->setLocale('id');
+    $settings = resolve(GeneralSettings::class);
+    $settings->default_locale = 'id';
+    $settings->save();
     Lang::addLines(['authentication.heading.login' => 'Judul dari katalog Laravel'], 'id');
 
     $this->get(route('login'))->assertOk()->assertSee('Judul dari katalog Laravel');
 });
 
 test('password confirmation uses PHP framework translations', function (): void {
-    app()->setLocale('id');
+    $settings = resolve(GeneralSettings::class);
+    $settings->default_locale = 'id';
+    $settings->save();
     $user = User::factory()->create();
 
     $this->actingAs($user)->post(route('password.confirm.store'), ['password' => 'incorrect-password'])
@@ -57,14 +66,18 @@ test('missing PHP framework translations retain their original keys', function (
 })->with(['en', 'id']);
 
 test('invalid login credentials use Indonesian translations', function (): void {
-    app()->setLocale('id');
+    $settings = resolve(GeneralSettings::class);
+    $settings->default_locale = 'id';
+    $settings->save();
 
     $this->post(route('login'), ['email' => 'missing@example.test', 'password' => 'invalid-password'])
         ->assertSessionHasErrors(['email' => 'Kredensial tersebut tidak cocok dengan akun mana pun.']);
 });
 
 test('profile renders Indonesian labels and saves a UUID user', function (): void {
-    app()->setLocale('id');
+    $settings = resolve(GeneralSettings::class);
+    $settings->default_locale = 'id';
+    $settings->save();
     $user = User::factory()->create();
     $this->actingAs($user);
 
@@ -79,7 +92,9 @@ test('profile renders Indonesian labels and saves a UUID user', function (): voi
 });
 
 test('home redirects guests to the Indonesian login page', function (): void {
-    app()->setLocale('id');
+    $settings = resolve(GeneralSettings::class);
+    $settings->default_locale = 'id';
+    $settings->save();
 
     $this->get(route('home'))->assertRedirect(route('login'));
 

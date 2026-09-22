@@ -1,5 +1,6 @@
 <?php
 
+use App\Actions\Settings\UpdateGeneralSettings;
 use App\Settings\GeneralSettings;
 use Flux\Flux;
 use Illuminate\Validation\Rule;
@@ -56,20 +57,11 @@ new #[Title('general_settings.heading.general')] class extends Component {
         ];
     }
 
-    public function save(GeneralSettings $settings): void
+    public function save(GeneralSettings $settings, UpdateGeneralSettings $updateGeneralSettings): void
     {
         $validated = $this->validate();
 
-        $settings->application_name = $validated['application_name'];
-        $settings->application_description = filled($validated['application_description'])
-            ? $validated['application_description']
-            : null;
-        $settings->contact_email = filled($validated['contact_email'])
-            ? $validated['contact_email']
-            : null;
-        $settings->default_locale = $validated['default_locale'];
-        $settings->timezone = $validated['timezone'];
-        $settings->save();
+        $updateGeneralSettings->handle($settings, $validated);
 
         Flux::toast(variant: 'success', text: __('general_settings.message.updated'));
     }

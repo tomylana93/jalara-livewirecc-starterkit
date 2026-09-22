@@ -3,9 +3,12 @@
 declare(strict_types=1);
 
 use App\Models\User;
+use App\Settings\GeneralSettings;
 
 test('guest pages render one localized appearance menu', function (string $routeName, string $locale): void {
-    app()->setLocale($locale);
+    $settings = resolve(GeneralSettings::class);
+    $settings->default_locale = $locale;
+    $settings->save();
 
     $response = $this->get(route($routeName));
 
